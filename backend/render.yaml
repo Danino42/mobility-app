@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: trusted-ev-fleet-api
+    runtime: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: MONGODB_URI
+        sync: false # set this manually in the Render dashboard (Atlas connection string)
+      - key: MONGODB_DB_NAME
+        value: trusted_ev_fleet
+      - key: CORS_ORIGINS
+        sync: false # e.g. https://your-app.vercel.app
