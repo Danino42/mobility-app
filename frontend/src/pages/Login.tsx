@@ -64,7 +64,7 @@ export default function Login() {
 
           <button
             type="submit"
-            className="mt-2 w-full rounded bg-accent py-2.5 text-[14px] font-medium text-text hover:bg-accent-dim"
+            className="mt-2 w-full rounded bg-accent py-2.5 text-[14px] font-medium text-on-accent hover:bg-accent/90"
           >
             Sign in
           </button>

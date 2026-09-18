@@ -1,5 +1,6 @@
 import { Menu, BatteryMedium } from "lucide-react";
 import type { DriverSession } from "../../types/domain";
+import carIcon from "../../images/carback.png";
 
 interface HeaderProps {
   session: DriverSession;
@@ -14,7 +15,7 @@ function batteryColor(percent: number): string {
 
 export default function Header({ session, onMenuClick }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-30 border-b border-border bg-bg">
+    <header className="sticky top-0 z-30 border-b border-border bg-surface">
       <div className="flex items-center gap-3 px-4 py-3">
         <button
           onClick={onMenuClick}
@@ -24,14 +25,19 @@ export default function Header({ session, onMenuClick }: HeaderProps) {
           <Menu size={22} />
         </button>
 
+        <img src={carIcon} alt="" className="h-7 w-7 shrink-0 object-contain" />
+
         <div className="flex flex-1 items-center gap-2 overflow-hidden">
           <span className="truncate text-[15px] font-medium">{session.driverName}</span>
           <span className="text-text-faint">·</span>
           <span className="truncate text-[13px] text-text-muted">{session.vehicleId}</span>
-          <span className="text-base leading-none">{session.vehicleIcon}</span>
         </div>
 
-        <div className={`flex items-center gap-1 text-[13px] tabular ${batteryColor(session.batteryPercent)}`}>
+        <div
+          className={`flex items-center gap-1 text-[13px] tabular ${batteryColor(
+            session.batteryPercent
+          )}`}
+        >
           <BatteryMedium size={18} />
           {session.batteryPercent}%
         </div>

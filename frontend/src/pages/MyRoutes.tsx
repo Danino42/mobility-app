@@ -1,6 +1,8 @@
 import { CalendarDays } from "lucide-react";
 import { mockRoutes, mockChargers } from "../mock/data";
 import type { PlannedRoute } from "../types/domain";
+import chargerIcon from "../images/charger.png";
+import mealDealIcon from "../images/mealdeal.jpg";
 
 const statusStyle: Record<PlannedRoute["status"], { label: string; className: string }> = {
   planned: { label: "Planned", className: "text-text-muted border-border" },
@@ -53,8 +55,17 @@ export default function MyRoutes() {
                   {stops.map((s) => (
                     <span
                       key={s.id}
-                      className="rounded-full border border-border px-2 py-0.5 text-[11px] text-text-muted"
+                      className="inline-flex items-center gap-1 rounded-full border border-border px-2 py-0.5 text-[11px] text-text-muted"
                     >
+                      <img
+                        src={s.perk === "meal_deal" ? mealDealIcon : chargerIcon}
+                        alt=""
+                        className={
+                          s.perk === "meal_deal"
+                            ? "h-3.5 w-3.5 rounded-full object-cover"
+                            : "h-3.5 w-3.5 object-contain"
+                        }
+                      />
                       {s.name}
                     </span>
                   ))}

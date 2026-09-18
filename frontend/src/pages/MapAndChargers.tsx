@@ -1,5 +1,5 @@
 import { mockChargers } from "../mock/data";
-import MapPlaceholder from "../components/MapPlaceholder";
+import GoogleMapView from "../components/GoogleMapView";
 import ChargerCard from "../components/ChargerCard";
 
 export default function MapAndChargers() {
@@ -16,7 +16,19 @@ export default function MapAndChargers() {
         </p>
       </div>
 
-      <MapPlaceholder chargers={mockChargers} />
+      <GoogleMapView chargers={mockChargers} />
+
+      <div className="mx-4 mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-text-muted">
+        <span className="flex items-center gap-1">
+          <span className="h-2 w-2 rounded-full bg-good" /> Optimal
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="h-2 w-2 rounded-full bg-warn" /> Still OK
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="h-2 w-2 rounded-full bg-accent" /> Higher cost
+        </span>
+      </div>
 
       <div className="mt-4">
         <p className="px-4 pb-1 text-[11px] text-good">Optimal stop</p>

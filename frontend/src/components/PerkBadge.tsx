@@ -1,19 +1,42 @@
-import { Coffee, UtensilsCrossed } from "lucide-react";
-import type { ChargerPerk } from "../types/domain";
+import coffeeIcon from "../images/coffee.png";
+import mealDealIcon from "../images/mealdeal.jpg";
+import type { ChargerPerk, MealDealDetail } from "../types/domain";
 
-const perkConfig: Record<Exclude<ChargerPerk, "none">, { label: string; icon: typeof Coffee }> = {
-  meal_deal: { label: "Meal deal", icon: UtensilsCrossed },
-  coffee: { label: "Coffee", icon: Coffee },
-  lounge: { label: "Lounge", icon: Coffee },
-};
+interface PerkBadgeProps {
+  perk: ChargerPerk;
+  mealDeal?: MealDealDetail;
+}
 
-export default function PerkBadge({ perk }: { perk: ChargerPerk }) {
+export default function PerkBadge({ perk, mealDeal }: PerkBadgeProps) {
   if (perk === "none") return null;
-  const { label, icon: Icon } = perkConfig[perk];
+
+  if (perk === "meal_deal" && mealDeal) {
+    const dealLabel =
+      mealDeal.type === "free"
+        ? "Free meal"
+        : `${mealDeal.discountPercent}% off meal`;
+
+    return (
+      <span className="inline-flex items-center gap-1.5 rounded-full border border-warn-bg bg-warn-bg px-2 py-0.5 text-[11px] text-warn">
+        <img src={mealDealIcon} alt="" className="h-3.5 w-3.5 rounded-full object-cover" />
+        {dealLabel}
+        {mealDeal.vegan && <span className="text-good">· vegan</span>}
+      </span>
+    );
+  }
+
+  if (perk === "coffee") {
+    return (
+      <span className="inline-flex items-center gap-1.5 rounded-full border border-warn-bg bg-warn-bg px-2 py-0.5 text-[11px] text-warn">
+        <img src={coffeeIcon} alt="" className="h-3.5 w-3.5 object-contain" />
+        Coffee
+      </span>
+    );
+  }
+
   return (
-    <span className="inline-flex items-center gap-1 rounded-full border border-warn/40 px-2 py-0.5 text-[11px] text-warn">
-      <Icon size={11} />
-      {label}
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-warn-bg bg-warn-bg px-2 py-0.5 text-[11px] text-warn">
+      Lounge
     </span>
   );
 }

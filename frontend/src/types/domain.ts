@@ -12,6 +12,13 @@ export interface DriverSession {
 
 export type ChargerPerk = "meal_deal" | "coffee" | "lounge" | "none";
 
+export interface MealDealDetail {
+  type: "free" | "discounted";
+  discountPercent?: number; // present when type is "discounted"
+  vegan: boolean;
+  venueName: string;
+}
+
 export interface ChargerStop {
   id: string;
   name: string;
@@ -21,6 +28,7 @@ export interface ChargerStop {
   available: number;
   total: number;
   perk: ChargerPerk;
+  mealDeal?: MealDealDetail;
   rank: "optimal" | "ok" | "skip";
 }
 

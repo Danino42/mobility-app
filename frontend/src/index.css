@@ -1,23 +1,27 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #17110f;
-  --color-surface: #1f1815;
-  --color-surface-raised: #271e1a;
-  --color-border: #3a2f2a;
-  --color-text: #f2ece8;
-  --color-text-muted: #9c8f89;
-  --color-text-faint: #6b615c;
+  --color-bg: #faf6f4;
+  --color-surface: #ffffff;
+  --color-surface-raised: #fbeeec;
+  --color-border: #ecdedb;
+  --color-text: #241c1a;
+  --color-text-muted: #8a7a74;
+  --color-text-faint: #b5a6a0;
   --color-accent: #c8382a;
-  --color-accent-dim: #7a241c;
-  --color-good: #5a8f5e;
-  --color-warn: #c98a3a;
+  --color-accent-dim: #ecc4bf;
+  --color-accent-bg: #f8e6e3;
+  --color-on-accent: #fdf5f4;
+  --color-good: #3d7a45;
+  --color-good-bg: #e6f0e5;
+  --color-warn: #a1660f;
+  --color-warn-bg: #faeddb;
 
   --font-sans: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 html,
@@ -38,7 +42,6 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* hide scrollbar on the horizontal chip rows but keep it scrollable */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }

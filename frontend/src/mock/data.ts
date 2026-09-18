@@ -8,13 +8,17 @@ import type {
 export const mockSession: DriverSession = {
   driverName: "D. Kovacs",
   vehicleId: "ZH 481 920",
-  vehicleIcon: "🚗",
+  vehicleIcon: "car",
   batteryPercent: 62,
   companyName: "BKW Energie AG",
   savedMoneyChf: 370,
   eScore: 98.5,
 };
 
+// Real-ish coordinates along a plausible Bern commute corridor, placed at
+// or near actual charging locations (BKW HQ, motorway service stations,
+// retail car parks) so the map reads as grounded rather than randomly
+// scattered.
 export const mockChargers: ChargerStop[] = [
   {
     id: "chg-1",
@@ -29,20 +33,26 @@ export const mockChargers: ChargerStop[] = [
   },
   {
     id: "chg-2",
-    name: "Migros Wankdorf",
-    lat: 46.965,
-    lng: 7.4595,
+    name: "Migros Wankdorf Center",
+    lat: 46.9656,
+    lng: 7.4614,
     pricePerKwh: 0.32,
     available: 3,
     total: 4,
     perk: "meal_deal",
-    rank: "ok",
+    mealDeal: {
+      type: "discounted",
+      discountPercent: 20,
+      vegan: true,
+      venueName: "Migros Restaurant Wankdorf",
+    },
+    rank: "optimal",
   },
   {
     id: "chg-3",
-    name: "Ionity Muri",
-    lat: 46.918,
-    lng: 7.478,
+    name: "Ionity Grauholz (A1)",
+    lat: 47.0198,
+    lng: 7.5121,
     pricePerKwh: 0.68,
     available: 2,
     total: 6,
@@ -51,14 +61,30 @@ export const mockChargers: ChargerStop[] = [
   },
   {
     id: "chg-4",
-    name: "Home - Bern",
-    lat: 46.947,
-    lng: 7.451,
-    pricePerKwh: 0.28,
-    available: 1,
-    total: 1,
-    perk: "none",
-    rank: "optimal",
+    name: "Coop Muri Rastplatz",
+    lat: 46.9155,
+    lng: 7.4784,
+    pricePerKwh: 0.34,
+    available: 4,
+    total: 6,
+    perk: "meal_deal",
+    mealDeal: {
+      type: "free",
+      vegan: false,
+      venueName: "Coop Restaurant Muri",
+    },
+    rank: "ok",
+  },
+  {
+    id: "chg-5",
+    name: "Shell Recharge Bern-Ost",
+    lat: 46.9401,
+    lng: 7.4919,
+    pricePerKwh: 0.41,
+    available: 5,
+    total: 8,
+    perk: "coffee",
+    rank: "ok",
   },
 ];
 
@@ -76,7 +102,7 @@ export const mockRoutes: PlannedRoute[] = [
     date: new Date(Date.now() + 86400000).toISOString(),
     label: "Bern - site inspection Muri",
     distanceKm: 18,
-    chargerStopIds: ["chg-3"],
+    chargerStopIds: ["chg-4"],
     status: "planned",
   },
   {
@@ -84,7 +110,7 @@ export const mockRoutes: PlannedRoute[] = [
     date: new Date(Date.now() + 3 * 86400000).toISOString(),
     label: "Bern - depot return",
     distanceKm: 6,
-    chargerStopIds: ["chg-4"],
+    chargerStopIds: ["chg-5"],
     status: "planned",
   },
 ];
