@@ -1,52 +1,42 @@
-// Core domain types for Trusted EV Fleet Charging
-// Mirrors the three charging realities from the BKW challenge brief:
-// home, workplace, public.
+// Core domain types for the mobile driver app.
 
-export type ChargingLocationType = "home" | "workplace" | "public";
-
-export interface ChargingEvent {
-  id: string;
+export interface DriverSession {
+  driverName: string;
   vehicleId: string;
-  driverId: string;
-  locationType: ChargingLocationType;
-  locationLabel: string; // e.g. "Home - Bern", "HQ Garage Slot 4", "Ionity Zurich"
-  startTime: string; // ISO datetime
-  endTime: string; // ISO datetime
-  energyKwh: number;
-  costChf: number;
-  tariffChfPerKwh: number;
-  reimbursed: boolean;
+  vehicleIcon: string; // emoji or short label used as the "fun icon"
+  batteryPercent: number;
+  companyName: string;
+  savedMoneyChf: number;
+  eScore: number; // efficiency score, e.g. 98.5
 }
 
-export interface Vehicle {
-  id: string;
-  plate: string;
-  make: string;
-  model: string;
-  driverId: string;
-  costCenter: string;
-}
+export type ChargerPerk = "meal_deal" | "coffee" | "lounge" | "none";
 
-export interface Driver {
+export interface ChargerStop {
   id: string;
   name: string;
-  homeChargingAccess: "own_wallbox" | "shared_system" | "no_infrastructure";
-  costCenter: string;
+  lat: number;
+  lng: number;
+  pricePerKwh: number;
+  available: number;
+  total: number;
+  perk: ChargerPerk;
+  rank: "optimal" | "ok" | "skip";
 }
 
-export interface FairnessMetric {
-  driverId: string;
-  avgCostPerKwh: number;
-  homeShare: number; // fraction of charging done at home (0-1)
-  workplaceShare: number;
-  publicShare: number;
-  potentialSavingsChf: number; // estimated savings if shifted to cheaper locations
+export interface PlannedRoute {
+  id: string;
+  date: string; // ISO date
+  label: string; // e.g. "Zurich -> Bern client visit"
+  distanceKm: number;
+  chargerStopIds: string[];
+  status: "planned" | "in_progress" | "done";
 }
 
-export interface FleetSummary {
-  totalVehicles: number;
-  totalEnergyKwhThisMonth: number;
-  totalCostChfThisMonth: number;
-  avgCostPerKwh: number;
-  byLocationType: Record<ChargingLocationType, { energyKwh: number; costChf: number }>;
+export interface CompanyRankingEntry {
+  rank: number;
+  companyName: string;
+  eScore: number;
+  totalSavedChf: number;
+  trend: "up" | "down" | "flat";
 }

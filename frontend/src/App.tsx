@@ -1,15 +1,19 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Layout from "./components/Layout";
-import FleetDashboard from "./pages/FleetDashboard";
-import DriverView from "./pages/DriverView";
+import AppShell from "./components/layout/AppShell";
+import Login from "./pages/Login";
+import MapAndChargers from "./pages/MapAndChargers";
+import MyRoutes from "./pages/MyRoutes";
+import Leaderboard from "./pages/Leaderboard";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<Layout />}>
-          <Route index element={<FleetDashboard />} />
-          <Route path="driver" element={<DriverView />} />
+        <Route path="/login" element={<Login />} />
+        <Route element={<AppShell />}>
+          <Route index element={<MapAndChargers />} />
+          <Route path="routes" element={<MyRoutes />} />
+          <Route path="leaderboard" element={<Leaderboard />} />
         </Route>
       </Routes>
     </BrowserRouter>
