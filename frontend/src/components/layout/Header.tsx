@@ -52,7 +52,10 @@ export default function Header({ session, onMenuClick }: HeaderProps) {
         </div>
         <div className="flex-1 px-4 py-2">
           <p className="text-[11px] text-text-muted">E-Score</p>
-          <p className="tabular text-[15px] font-medium text-accent">{session.eScore}</p>
+          <p className="tabular text-[15px] font-medium text-good">{session.eScore}</p>
+          <p className="tabular text-[11px] text-text-faint">
+            over 4'027 km
+          </p>
         </div>
       </div>
     </header>

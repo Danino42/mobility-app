@@ -1,4 +1,4 @@
-import { CalendarDays } from "lucide-react";
+import { CalendarDays, Plus } from "lucide-react";
 import { mockRoutes, mockChargers } from "../mock/data";
 import type { PlannedRoute } from "../types/domain";
 import chargerIcon from "../images/charger.png";
@@ -21,9 +21,18 @@ function formatDate(iso: string) {
 export default function MyRoutes() {
   return (
     <div>
-      <div className="px-4 pt-4">
-        <h1 className="text-[16px] font-medium">My routes</h1>
-        <p className="mt-0.5 text-[12px] text-text-muted">Planned trips for the days ahead</p>
+      <div className="flex items-start justify-between gap-3 px-4 pt-4">
+        <div>
+          <h1 className="text-[16px] font-medium">My routes</h1>
+          <p className="mt-0.5 text-[12px] text-text-muted">Planned trips for the days ahead</p>
+        </div>
+        <button
+          type="button"
+          className="flex shrink-0 items-center gap-1.5 rounded bg-accent px-3 py-2 text-[13px] font-medium text-on-accent hover:bg-accent/90"
+        >
+          <Plus size={16} />
+          New route
+        </button>
       </div>
 
       <div className="mt-4 flex flex-col gap-2 px-4">
