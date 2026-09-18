@@ -21,6 +21,23 @@ export interface MealDealDetail {
 
 export type PriceTier = "low" | "mid" | "high";
 
+export type NearbyCategory =
+  | "fast_food"
+  | "groceries"
+  | "kiosk"
+  | "pharmacy"
+  | "atm"
+  | "restroom"
+  | "supermarket"
+  | "bakery";
+
+export interface NearbyPlace {
+  id: string;
+  name: string;
+  category: NearbyCategory;
+  walkMinutes: number;
+}
+
 export interface ChargerStop {
   id: string;
   name: string;
@@ -34,6 +51,7 @@ export interface ChargerStop {
   mealDeal?: MealDealDetail;
   rank: "optimal" | "ok" | "skip";
   onActiveRoute?: boolean; // true for the single highlighted stop on today's route
+  nearby?: NearbyPlace[];
 }
 
 export interface PlannedRoute {
@@ -62,4 +80,31 @@ export interface CompanyRankingEntry {
   eScore: number;
   totalSavedChf: number;
   trend: "up" | "down" | "flat";
+}
+
+export interface LeaderboardData {
+  totalCompanies: number;
+  entries: CompanyRankingEntry[]; // top entries, own company always included
+  ownCompanyName: string;
+}
+
+export type PreferenceId =
+  | "home_charging"
+  | "coffee"
+  | "vegan"
+  | "vegetarian"
+  | "fast_food"
+  | "gluten_free"
+  | "quiet_stops"
+  | "fast_dc_charging"
+  | "loyalty_deals";
+
+export interface PreferenceQuestion {
+  id: PreferenceId;
+  question: string;
+}
+
+export interface UserPreferences {
+  answers: Partial<Record<PreferenceId, boolean>>;
+  completedOnboarding: boolean;
 }

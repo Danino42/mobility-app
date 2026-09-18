@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Zap } from "lucide-react";
+import { loadPreferences } from "../lib/preferencesStorage";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -15,7 +16,8 @@ export default function Login() {
       return;
     }
     // No backend auth yet -- any non-empty input proceeds.
-    navigate("/");
+    const prefs = loadPreferences();
+    navigate(prefs.completedOnboarding ? "/" : "/onboarding");
   }
 
   return (

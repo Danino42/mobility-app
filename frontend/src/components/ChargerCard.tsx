@@ -1,6 +1,7 @@
 import type { ChargerStop } from "../types/domain";
 import PerkBadge from "./PerkBadge";
 import PriceTierBadge from "./PriceTierBadge";
+import NearbyPlaces from "./NearbyPlaces";
 import chargerIcon from "../images/charger.png";
 
 const rankStyle: Record<ChargerStop["rank"], { label: string; className: string }> = {
@@ -36,6 +37,9 @@ export default function ChargerCard({ charger }: { charger: ChargerStop }) {
           <div className="mt-0.5">
             <PerkBadge perk={charger.perk} mealDeal={charger.mealDeal} />
           </div>
+        )}
+        {charger.nearby && charger.nearby.length > 0 && (
+          <NearbyPlaces places={charger.nearby} />
         )}
       </div>
     </div>

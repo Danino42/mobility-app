@@ -1,4 +1,4 @@
-import type { ChargerStop, MealDealDetail, PriceTier } from "../types/domain";
+import type { ChargerStop, MealDealDetail, NearbyCategory, NearbyPlace, PriceTier } from "../types/domain";
 
 // Real Swiss towns/areas used as anchor points so generated chargers cluster
 // in plausible places rather than scattering uniformly across empty land.
@@ -43,6 +43,21 @@ const CHARGER_NETWORKS = [
   "EVPass",
 ];
 
+// Name pools per nearby-place category, used to generate plausible
+// (not real) points of interest around each charger.
+const NEARBY_NAMES: Record<NearbyCategory, string[]> = {
+  fast_food: ["McDonald's", "Burger King", "Subway", "Kebab Haus"],
+  groceries: ["Volg", "Denner", "Spar"],
+  kiosk: ["Valora Kiosk", "Press & Books", "Naville"],
+  pharmacy: ["Amavita", "Sun Store", "TopPharm"],
+  atm: ["PostFinance ATM", "UBS ATM", "Raiffeisen ATM"],
+  restroom: ["Public WC", "McClean", "Rest Area WC"],
+  supermarket: ["Migros", "Coop", "Aldi", "Lidl"],
+  bakery: ["Backwerk", "Confiserie Sprüngli", "Dorfbäckerei"],
+};
+
+const NEARBY_CATEGORIES = Object.keys(NEARBY_NAMES) as NearbyCategory[];
+
 // Small deterministic PRNG (mulberry32) so the generated set is stable
 // across reloads instead of reshuffling every render.
 function mulberry32(seed: number) {
@@ -74,6 +89,23 @@ function buildMealDeal(rand: () => number): MealDealDetail {
       };
 }
 
+function buildNearbyPlaces(rand: () => number): NearbyPlace[] {
+  // Shuffle categories deterministically, then take up to 4 -- not every
+  // charger gets every category, and not every charger gets 4.
+  const shuffled = [...NEARBY_CATEGORIES].sort(() => rand() - 0.5);
+  const count = 1 + Math.floor(rand() * 4); // 1 to 4 nearby places
+  return shuffled.slice(0, count).map((category, i) => {
+    const names = NEARBY_NAMES[category];
+    const name = names[Math.floor(rand() * names.length)];
+    return {
+      id: `nearby-${category}-${i}`,
+      name,
+      category,
+      walkMinutes: 1 + Math.floor(rand() * 8),
+    };
+  });
+}
+
 export function generateMockChargers(count = 50): ChargerStop[] {
   const rand = mulberry32(42);
   const chargers: ChargerStop[] = [];
@@ -99,6 +131,7 @@ export function generateMockChargers(count = 50): ChargerStop[] {
       priceTier === "low" ? "optimal" : priceTier === "mid" ? "ok" : "skip";
 
     const network = CHARGER_NETWORKS[Math.floor(rand() * CHARGER_NETWORKS.length)];
+    const nearby = buildNearbyPlaces(rand);
 
     chargers.push({
       id: `chg-${i + 1}`,
@@ -112,6 +145,7 @@ export function generateMockChargers(count = 50): ChargerStop[] {
       perk,
       mealDeal,
       rank,
+      nearby,
     });
   }
 

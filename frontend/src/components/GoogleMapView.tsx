@@ -97,9 +97,15 @@ function ChargerMarker({
 
 function CarMarker({ position }: { position: LatLng }) {
   return (
-    <AdvancedMarker position={position} zIndex={20}>
-      <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-accent bg-surface shadow-md">
-        <img src={carIcon} alt="Your car" className="h-6 w-6 object-contain" />
+    <AdvancedMarker position={position} zIndex={25}>
+      <div className="flex flex-col items-center gap-1">
+        <span className="whitespace-nowrap rounded-full bg-accent px-2 py-0.5 text-[10px] font-medium text-on-accent shadow-sm">
+          You
+        </span>
+        <div className="relative flex h-12 w-12 items-center justify-center rounded-full border-[3px] border-white bg-accent shadow-lg">
+          <span className="absolute inset-0 -z-10 animate-ping rounded-full bg-accent opacity-40" />
+          <img src={carIcon} alt="Your car" className="h-7 w-7 object-contain" />
+        </div>
       </div>
     </AdvancedMarker>
   );

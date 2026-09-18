@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { X, Map, Route, Trophy, LogOut } from "lucide-react";
+import { X, Map, Route, Trophy, SlidersVertical, LogOut } from "lucide-react";
 
 interface SidebarProps {
   open: boolean;
@@ -10,6 +10,7 @@ const links = [
   { to: "/", label: "Map & chargers", icon: Map },
   { to: "/routes", label: "My routes", icon: Route },
   { to: "/leaderboard", label: "Company leaderboard", icon: Trophy },
+  { to: "/preferences", label: "Preferences", icon: SlidersVertical },
 ];
 
 export default function Sidebar({ open, onClose }: SidebarProps) {

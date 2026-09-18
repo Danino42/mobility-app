@@ -2,6 +2,7 @@ import type {
   CompanyRankingEntry,
   DriverSession,
   LatLng,
+  LeaderboardData,
   PlannedRoute,
   RouteWaypoint,
 } from "../types/domain";
@@ -27,9 +28,9 @@ export const mockRouteWaypoints: RouteWaypoint[] = [
   { location: { lat: 46.9481, lng: 7.4474 }, label: "Finish", placeName: "Home - Bern" },
 ];
 
-// Mock live position of the car -- currently placed between Bern and
-// Zurich, near the Kirchberg motorway corridor.
-export const mockCarPosition: LatLng = { lat: 47.03, lng: 7.65 };
+// Mock "you are here" position -- placed directly in Bern for now (fixed
+// mock location rather than real device geolocation).
+export const mockCarPosition: LatLng = { lat: 46.9481, lng: 7.4474 };
 
 // A national-looking network of 50 chargers, generated deterministically
 // around real Swiss towns. Meal deals / coffee are bound to a subset of
@@ -46,7 +47,7 @@ export const mockRouteChargerId = "chg-route-1";
 export const mockChargers = [
   {
     id: mockRouteChargerId,
-    name: "BKW Kilchberg (A1)",
+    name: "BKW Kirchberg (A1)",
     lat: 47.0975,
     lng: 7.5987,
     pricePerKwh: 0.29,
@@ -61,6 +62,12 @@ export const mockChargers = [
     },
     rank: "optimal" as const,
     onActiveRoute: true,
+    nearby: [
+      { id: "nearby-1", name: "Migros", category: "supermarket" as const, walkMinutes: 3 },
+      { id: "nearby-2", name: "Valora Kiosk", category: "kiosk" as const, walkMinutes: 1 },
+      { id: "nearby-3", name: "McDonald's", category: "fast_food" as const, walkMinutes: 5 },
+      { id: "nearby-4", name: "Public WC", category: "restroom" as const, walkMinutes: 2 },
+    ],
   },
   ...generatedChargers,
 ];
@@ -92,10 +99,29 @@ export const mockRoutes: PlannedRoute[] = [
   },
 ];
 
-export const mockCompanyRanking: CompanyRankingEntry[] = [
+const top5: CompanyRankingEntry[] = [
   { rank: 1, companyName: "Swisscom AG", eScore: 99.1, totalSavedChf: 18420, trend: "up" },
-  { rank: 2, companyName: "BKW Energie AG", eScore: 97.8, totalSavedChf: 16110, trend: "up" },
+  { rank: 2, companyName: "Nestle Suisse", eScore: 98.6, totalSavedChf: 17640, trend: "up" },
   { rank: 3, companyName: "Post CH AG", eScore: 96.4, totalSavedChf: 14870, trend: "flat" },
   { rank: 4, companyName: "SBB Cargo", eScore: 94.2, totalSavedChf: 12340, trend: "down" },
   { rank: 5, companyName: "Migros Betriebe", eScore: 92.6, totalSavedChf: 10980, trend: "up" },
 ];
+
+const ownCompanyEntry: CompanyRankingEntry = {
+  rank: 70,
+  companyName: "BKW Energie AG",
+  eScore: 65,
+  totalSavedChf: 4210,
+  trend: "up",
+};
+
+export const mockLeaderboard: LeaderboardData = {
+  totalCompanies: 147,
+  entries: top5,
+  ownCompanyName: ownCompanyEntry.companyName,
+};
+
+export const mockOwnCompanyEntry = ownCompanyEntry;
+
+// Kept for anything still importing the old flat list.
+export const mockCompanyRanking: CompanyRankingEntry[] = [...top5, ownCompanyEntry];

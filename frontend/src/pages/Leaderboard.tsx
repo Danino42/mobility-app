@@ -1,5 +1,5 @@
 import { TrendingUp, TrendingDown, Minus, Trophy } from "lucide-react";
-import { mockCompanyRanking, mockSession } from "../mock/data";
+import { mockLeaderboard, mockOwnCompanyEntry } from "../mock/data";
 import type { CompanyRankingEntry } from "../types/domain";
 
 const trendIcon: Record<CompanyRankingEntry["trend"], typeof TrendingUp> = {
@@ -14,13 +14,41 @@ const trendColor: Record<CompanyRankingEntry["trend"], string> = {
   flat: "text-text-faint",
 };
 
+function RankRow({ entry, isOwnCompany }: { entry: CompanyRankingEntry; isOwnCompany: boolean }) {
+  const TrendIcon = trendIcon[entry.trend];
+
+  return (
+    <div
+      className={`flex items-center gap-3 border-b border-border px-4 py-3 last:border-b-0 ${
+        isOwnCompany ? "bg-surface-raised" : ""
+      }`}
+    >
+      <span className="w-8 shrink-0 tabular text-[13px] text-text-muted">{entry.rank}</span>
+
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-[14px] font-medium">
+          {entry.companyName}
+          {isOwnCompany && <span className="ml-2 text-[11px] text-accent">your company</span>}
+        </p>
+      </div>
+
+      <div className="flex items-center gap-1.5">
+        <span className="tabular text-[14px] font-medium">{entry.eScore}</span>
+        <TrendIcon size={14} className={trendColor[entry.trend]} />
+      </div>
+    </div>
+  );
+}
+
 export default function Leaderboard() {
+  const { totalCompanies, entries } = mockLeaderboard;
+
   return (
     <div>
       <div className="px-4 pt-4">
         <h1 className="text-[16px] font-medium">Company leaderboard</h1>
         <p className="mt-0.5 text-[12px] text-text-muted">
-          Ranked by efficiency score this month
+          Ranked by efficiency score this month · {totalCompanies} companies
         </p>
       </div>
 
@@ -35,40 +63,15 @@ export default function Leaderboard() {
       </div>
 
       <div className="mt-4 border-y border-border bg-surface">
-        {mockCompanyRanking.map((entry) => {
-          const TrendIcon = trendIcon[entry.trend];
-          const isOwnCompany = entry.companyName === mockSession.companyName;
+        {entries.map((entry) => (
+          <RankRow key={entry.rank} entry={entry} isOwnCompany={false} />
+        ))}
 
-          return (
-            <div
-              key={entry.rank}
-              className={`flex items-center gap-3 border-b border-border px-4 py-3 last:border-b-0 ${
-                isOwnCompany ? "bg-surface-raised" : ""
-              }`}
-            >
-              <span className="w-5 shrink-0 tabular text-[13px] text-text-muted">
-                {entry.rank}
-              </span>
+        <div className="flex items-center justify-center border-b border-border py-2 text-[12px] tracking-wider text-text-faint">
+          · · ·
+        </div>
 
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-[14px] font-medium">
-                  {entry.companyName}
-                  {isOwnCompany && (
-                    <span className="ml-2 text-[11px] text-accent">your company</span>
-                  )}
-                </p>
-                <p className="tabular text-[12px] text-text-muted">
-                  CHF {entry.totalSavedChf.toLocaleString("de-CH")} saved
-                </p>
-              </div>
-
-              <div className="flex items-center gap-1.5">
-                <span className="tabular text-[14px] font-medium">{entry.eScore}</span>
-                <TrendIcon size={14} className={trendColor[entry.trend]} />
-              </div>
-            </div>
-          );
-        })}
+        <RankRow entry={mockOwnCompanyEntry} isOwnCompany />
       </div>
     </div>
   );
