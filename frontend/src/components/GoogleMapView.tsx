@@ -65,9 +65,9 @@ function ChargerMarker({
       onClick={() => onSelect(charger)}
       zIndex={isRouteHighlight ? 30 : charger.rank === "optimal" ? 5 : 1}
     >
-      <div className="flex flex-col items-center gap-1">
+            <div className="flex flex-col items-center gap-1">
         <div
-          className="flex items-center justify-center rounded-full bg-surface shadow-md"
+          className="relative flex items-center justify-center rounded-full bg-surface shadow-md"
           style={{
             width: size,
             height: size,
@@ -84,6 +84,18 @@ function ChargerMarker({
               objectFit: hasMealDeal ? "cover" : "contain",
             }}
           />
+          {isRouteHighlight && hasMealDeal && (
+            <div
+              className="absolute flex items-center justify-center rounded-full border-2 border-white bg-surface shadow-sm"
+              style={{ width: size * 0.4, height: size * 0.4, right: -4, bottom: -4 }}
+            >
+              <img
+                src={chargerIcon}
+                alt=""
+                style={{ width: size * 0.26, height: size * 0.26, objectFit: "contain" }}
+              />
+            </div>
+          )}
         </div>
         {isRouteHighlight && offer && (
           <span className="whitespace-nowrap rounded-full bg-good px-2.5 py-1 text-[13px] font-medium text-white shadow-md">

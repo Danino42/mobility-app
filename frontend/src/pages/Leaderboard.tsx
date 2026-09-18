@@ -1,6 +1,7 @@
 import { TrendingUp, TrendingDown, Minus, Trophy } from "lucide-react";
 import { mockLeaderboard, mockOwnCompanyEntry } from "../mock/data";
 import type { CompanyRankingEntry } from "../types/domain";
+import efleetBanner from "../images/efleet-crop.jpg";
 
 const trendIcon: Record<CompanyRankingEntry["trend"], typeof TrendingUp> = {
   up: TrendingUp,
@@ -52,13 +53,16 @@ export default function Leaderboard() {
         </p>
       </div>
 
-      <div className="mx-4 mt-3 flex items-center gap-3 rounded border border-accent-dim bg-surface px-4 py-3">
-        <Trophy size={20} className="text-warn" />
-        <div>
-          <p className="text-[13px] font-medium">This month's prize</p>
-          <p className="text-[12px] text-text-muted">
-            Top company gets a fleet-wide charging credit
-          </p>
+            <div className="mx-4 mt-3 overflow-hidden rounded border border-accent-dim bg-surface">
+        <img src={efleetBanner} alt="" className="h-20 w-full object-cover" />
+        <div className="flex items-center gap-3 px-4 py-3">
+          <Trophy size={20} className="text-warn" />
+          <div>
+            <p className="text-[13px] font-medium">This month's prize</p>
+            <p className="text-[12px] text-text-muted">
+              Top company gets a fleet-wide charging credit
+            </p>
+          </div>
         </div>
       </div>
 

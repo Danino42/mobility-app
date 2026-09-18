@@ -30,9 +30,9 @@ export default function ScanChargerButton() {
           aria-label="Scan QR code to charge at a partner station"
           className="pointer-events-auto absolute bottom-6 right-6 flex h-14 w-14 items-center justify-center rounded-full bg-accent shadow-lg transition-transform hover:scale-105 active:scale-95"
         >
-          <span
+        <span
             aria-hidden="true"
-            className="block h-7 w-7 bg-white"
+            className="block h-8 w-8 bg-white"
             style={{
               WebkitMaskImage: `url(${chargeIcon})`,
               maskImage: `url(${chargeIcon})`,
@@ -42,6 +42,7 @@ export default function ScanChargerButton() {
               maskRepeat: "no-repeat",
               WebkitMaskPosition: "center",
               maskPosition: "center",
+              filter: "drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35))",
             }}
           />
         </button>
