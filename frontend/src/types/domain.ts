@@ -108,3 +108,15 @@ export interface UserPreferences {
   answers: Partial<Record<PreferenceId, boolean>>;
   completedOnboarding: boolean;
 }
+
+export type FeedbackMood = "happy" | "neutral" | "sad";
+
+export interface FeedbackComment {
+  id: string;
+  authorName: string;
+  mood: FeedbackMood;
+  text: string;
+  upvotes: number;
+  downvotes: number;
+  createdAt: string; // ISO date
+}
