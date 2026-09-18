@@ -16,7 +16,6 @@ export const mockSession: DriverSession = {
   companyName: "BKW Energie AG",
   savedMoneyChf: 370,
   eScore: 98.5,
-  lifetimeKm: 4027,
 };
 
 // Today's trip: employee home in Bern -> office in Zurich -> office in

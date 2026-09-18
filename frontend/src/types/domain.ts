@@ -8,7 +8,6 @@ export interface DriverSession {
   companyName: string;
   savedMoneyChf: number;
   eScore: number; // efficiency score, e.g. 98.5
-  lifetimeKm: number; // total km driven since the account was created
 }
 
 export type ChargerPerk = "meal_deal" | "coffee" | "lounge" | "none";
@@ -108,16 +107,4 @@ export interface PreferenceQuestion {
 export interface UserPreferences {
   answers: Partial<Record<PreferenceId, boolean>>;
   completedOnboarding: boolean;
-}
-
-export type FeedbackMood = "happy" | "neutral" | "sad";
-
-export interface FeedbackComment {
-  id: string;
-  authorName: string;
-  mood: FeedbackMood;
-  text: string;
-  upvotes: number;
-  downvotes: number;
-  createdAt: string; // ISO date
 }

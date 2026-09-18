@@ -6,7 +6,6 @@ import MapAndChargers from "./pages/MapAndChargers";
 import MyRoutes from "./pages/MyRoutes";
 import Leaderboard from "./pages/Leaderboard";
 import Preferences from "./pages/Preferences";
-import Feedback from "./pages/Feedback";
 
 function App() {
   return (
@@ -19,7 +18,6 @@ function App() {
           <Route path="routes" element={<MyRoutes />} />
           <Route path="leaderboard" element={<Leaderboard />} />
           <Route path="preferences" element={<Preferences />} />
-          <Route path="feedback" element={<Feedback />} />
         </Route>
       </Routes>
     </BrowserRouter>
