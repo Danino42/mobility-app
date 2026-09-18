@@ -1,9 +1,11 @@
 import type {
-  ChargerStop,
   CompanyRankingEntry,
   DriverSession,
+  LatLng,
   PlannedRoute,
+  RouteWaypoint,
 } from "../types/domain";
+import { generateMockChargers } from "./generateChargers";
 
 export const mockSession: DriverSession = {
   driverName: "D. Kovacs",
@@ -15,86 +17,61 @@ export const mockSession: DriverSession = {
   eScore: 98.5,
 };
 
-// Real-ish coordinates along a plausible Bern commute corridor, placed at
-// or near actual charging locations (BKW HQ, motorway service stations,
-// retail car parks) so the map reads as grounded rather than randomly
-// scattered.
-export const mockChargers: ChargerStop[] = [
+// Today's trip: employee home in Bern -> office in Zurich -> office in
+// Luzern -> back home in Bern. Labeled as Start / Goal 1 / Goal 2 / Finish
+// so the route reads as a simple sequence rather than a complex itinerary.
+export const mockRouteWaypoints: RouteWaypoint[] = [
+  { location: { lat: 46.9481, lng: 7.4474 }, label: "Start", placeName: "Home - Bern" },
+  { location: { lat: 47.3769, lng: 8.5417 }, label: "Goal 1", placeName: "Office - Zurich" },
+  { location: { lat: 47.0502, lng: 8.3093 }, label: "Goal 2", placeName: "Office - Luzern" },
+  { location: { lat: 46.9481, lng: 7.4474 }, label: "Finish", placeName: "Home - Bern" },
+];
+
+// Mock live position of the car -- currently placed between Bern and
+// Zurich, near the Kirchberg motorway corridor.
+export const mockCarPosition: LatLng = { lat: 47.03, lng: 7.65 };
+
+// A national-looking network of 50 chargers, generated deterministically
+// around real Swiss towns. Meal deals / coffee are bound to a subset of
+// these chargers (not all), matching how perks work in reality.
+const generatedChargers = generateMockChargers(50);
+
+// One charger near the actual route (Kirchberg, on the Bern-Zurich
+// motorway corridor) is promoted to be THE highlighted stop for today's
+// route -- shown large on the map with its free meal deal front and
+// center. The rest of the generated set still appears, smaller, so the
+// map also reflects the wider network.
+export const mockRouteChargerId = "chg-route-1";
+
+export const mockChargers = [
   {
-    id: "chg-1",
-    name: "BKW HQ - Viktoriaplatz",
-    lat: 46.9481,
-    lng: 7.4474,
-    pricePerKwh: 0.25,
-    available: 6,
-    total: 8,
-    perk: "coffee",
-    rank: "optimal",
-  },
-  {
-    id: "chg-2",
-    name: "Migros Wankdorf Center",
-    lat: 46.9656,
-    lng: 7.4614,
-    pricePerKwh: 0.32,
-    available: 3,
-    total: 4,
-    perk: "meal_deal",
-    mealDeal: {
-      type: "discounted",
-      discountPercent: 20,
-      vegan: true,
-      venueName: "Migros Restaurant Wankdorf",
-    },
-    rank: "optimal",
-  },
-  {
-    id: "chg-3",
-    name: "Ionity Grauholz (A1)",
-    lat: 47.0198,
-    lng: 7.5121,
-    pricePerKwh: 0.68,
-    available: 2,
-    total: 6,
-    perk: "none",
-    rank: "skip",
-  },
-  {
-    id: "chg-4",
-    name: "Coop Muri Rastplatz",
-    lat: 46.9155,
-    lng: 7.4784,
-    pricePerKwh: 0.34,
-    available: 4,
-    total: 6,
-    perk: "meal_deal",
-    mealDeal: {
-      type: "free",
-      vegan: false,
-      venueName: "Coop Restaurant Muri",
-    },
-    rank: "ok",
-  },
-  {
-    id: "chg-5",
-    name: "Shell Recharge Bern-Ost",
-    lat: 46.9401,
-    lng: 7.4919,
-    pricePerKwh: 0.41,
+    id: mockRouteChargerId,
+    name: "BKW Kilchberg (A1)",
+    lat: 47.0975,
+    lng: 7.5987,
+    pricePerKwh: 0.29,
+    priceTier: "low" as const,
     available: 5,
-    total: 8,
-    perk: "coffee",
-    rank: "ok",
+    total: 6,
+    perk: "meal_deal" as const,
+    mealDeal: {
+      type: "free" as const,
+      vegan: true,
+      venueName: "Kirchberg Raststätte",
+    },
+    rank: "optimal" as const,
+    onActiveRoute: true,
   },
+  ...generatedChargers,
 ];
 
 export const mockRoutes: PlannedRoute[] = [
   {
     id: "route-1",
     date: new Date().toISOString(),
-    label: "Bern - client visit Zurich",
-    distanceKm: 125,
-    chargerStopIds: ["chg-1", "chg-2"],
+    label: "Bern - Zurich - Luzern loop",
+    distanceKm: 268,
+    chargerStopIds: [mockRouteChargerId],
     status: "in_progress",
   },
   {
@@ -102,7 +79,7 @@ export const mockRoutes: PlannedRoute[] = [
     date: new Date(Date.now() + 86400000).toISOString(),
     label: "Bern - site inspection Muri",
     distanceKm: 18,
-    chargerStopIds: ["chg-4"],
+    chargerStopIds: [],
     status: "planned",
   },
   {
@@ -110,7 +87,7 @@ export const mockRoutes: PlannedRoute[] = [
     date: new Date(Date.now() + 3 * 86400000).toISOString(),
     label: "Bern - depot return",
     distanceKm: 6,
-    chargerStopIds: ["chg-5"],
+    chargerStopIds: [],
     status: "planned",
   },
 ];

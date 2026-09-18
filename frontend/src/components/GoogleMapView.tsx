@@ -1,11 +1,15 @@
 import { useState } from "react";
-import { APIProvider, Map, AdvancedMarker, InfoWindow } from "@vis.gl/react-google-maps";
-import type { ChargerStop } from "../types/domain";
+import { APIProvider, Map, AdvancedMarker, InfoWindow, Polyline } from "@vis.gl/react-google-maps";
+import type { ChargerStop, LatLng, RouteWaypoint } from "../types/domain";
 import chargerIcon from "../images/charger.png";
 import mealDealIcon from "../images/mealdeal.jpg";
+import carIcon from "../images/carback.png";
+import { useDirectionsPath } from "./useDirectionsPath";
 
 interface GoogleMapViewProps {
   chargers: ChargerStop[];
+  routeWaypoints: RouteWaypoint[];
+  carPosition: LatLng;
 }
 
 const rankRingColor: Record<ChargerStop["rank"], string> = {
@@ -14,8 +18,27 @@ const rankRingColor: Record<ChargerStop["rank"], string> = {
   skip: "#c8382a",
 };
 
-// Centered on Bern, roughly the midpoint of the mock charger corridor.
-const DEFAULT_CENTER = { lat: 46.955, lng: 7.475 };
+const DEFAULT_CENTER = { lat: 47.06, lng: 7.95 };
+
+function offerLabel(charger: ChargerStop): string | null {
+  if (!charger.mealDeal) return null;
+  return charger.mealDeal.type === "free"
+    ? "FREE MEAL"
+    : `-${charger.mealDeal.discountPercent}% meal`;
+}
+
+function WaypointMarker({ waypoint }: { waypoint: RouteWaypoint }) {
+  return (
+    <AdvancedMarker position={waypoint.location} zIndex={15}>
+      <div className="flex flex-col items-center gap-1">
+        <span className="whitespace-nowrap rounded-full bg-[#241c1a] px-2 py-0.5 text-[10px] font-medium text-white shadow-sm">
+          {waypoint.label}
+        </span>
+        <div className="h-3 w-3 rounded-full border-2 border-white bg-[#241c1a] shadow-sm" />
+      </div>
+    </AdvancedMarker>
+  );
+}
 
 function ChargerMarker({
   charger,
@@ -25,28 +48,74 @@ function ChargerMarker({
   onSelect: (c: ChargerStop) => void;
 }) {
   const hasMealDeal = charger.perk === "meal_deal";
+  const isRouteHighlight = Boolean(charger.onActiveRoute);
   const icon = hasMealDeal ? mealDealIcon : chargerIcon;
+  const offer = offerLabel(charger);
+
+  // Only the one charger tied to today's active route renders large with
+  // its offer spelled out. Everything else in the network renders small,
+  // scaled a little by rank so better options are still slightly more
+  // noticeable without competing with the highlighted stop.
+  const size = isRouteHighlight ? 64 : charger.rank === "optimal" ? 26 : 20;
+  const ringWidth = isRouteHighlight ? 4 : 1.5;
 
   return (
     <AdvancedMarker
       position={{ lat: charger.lat, lng: charger.lng }}
       onClick={() => onSelect(charger)}
+      zIndex={isRouteHighlight ? 30 : charger.rank === "optimal" ? 5 : 1}
     >
-      <div
-        className="flex h-9 w-9 items-center justify-center rounded-full bg-surface shadow-sm"
-        style={{ border: `2px solid ${rankRingColor[charger.rank]}` }}
-      >
-        <img
-          src={icon}
-          alt=""
-          className={hasMealDeal ? "h-6 w-6 rounded-full object-cover" : "h-5 w-5 object-contain"}
-        />
+      <div className="flex flex-col items-center gap-1">
+        <div
+          className="flex items-center justify-center rounded-full bg-surface shadow-md"
+          style={{
+            width: size,
+            height: size,
+            border: `${ringWidth}px solid ${rankRingColor[charger.rank]}`,
+          }}
+        >
+          <img
+            src={icon}
+            alt=""
+            style={{
+              width: hasMealDeal ? size * 0.72 : size * 0.6,
+              height: hasMealDeal ? size * 0.72 : size * 0.6,
+              borderRadius: hasMealDeal ? "9999px" : 0,
+              objectFit: hasMealDeal ? "cover" : "contain",
+            }}
+          />
+        </div>
+        {isRouteHighlight && offer && (
+          <span className="whitespace-nowrap rounded-full bg-good px-2.5 py-1 text-[13px] font-medium text-white shadow-md">
+            {offer}
+          </span>
+        )}
       </div>
     </AdvancedMarker>
   );
 }
 
-export default function GoogleMapView({ chargers }: GoogleMapViewProps) {
+function CarMarker({ position }: { position: LatLng }) {
+  return (
+    <AdvancedMarker position={position} zIndex={20}>
+      <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-accent bg-surface shadow-md">
+        <img src={carIcon} alt="Your car" className="h-6 w-6 object-contain" />
+      </div>
+    </AdvancedMarker>
+  );
+}
+
+function RoutePolyline({ waypoints }: { waypoints: RouteWaypoint[] }) {
+  const { path } = useDirectionsPath(waypoints);
+  if (!path) return null;
+  return <Polyline path={path} strokeColor="#c8382a" strokeOpacity={0.85} strokeWeight={4} />;
+}
+
+export default function GoogleMapView({
+  chargers,
+  routeWaypoints,
+  carPosition,
+}: GoogleMapViewProps) {
   const [selected, setSelected] = useState<ChargerStop | null>(null);
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string | undefined;
 
@@ -62,19 +131,27 @@ export default function GoogleMapView({ chargers }: GoogleMapViewProps) {
   }
 
   return (
-    <div className="mx-4 mt-3 h-56 overflow-hidden rounded border border-border">
+    <div className="mx-4 mt-3 h-[62vh] min-h-[420px] overflow-hidden rounded border border-border">
       <APIProvider apiKey={apiKey}>
         <Map
           mapId="fleet-charging-map"
           defaultCenter={DEFAULT_CENTER}
-          defaultZoom={11}
+          defaultZoom={9}
           gestureHandling="greedy"
           disableDefaultUI
           style={{ width: "100%", height: "100%" }}
         >
+          <RoutePolyline waypoints={routeWaypoints} />
+
+          {routeWaypoints.map((w) => (
+            <WaypointMarker key={w.label} waypoint={w} />
+          ))}
+
           {chargers.map((c) => (
             <ChargerMarker key={c.id} charger={c} onSelect={setSelected} />
           ))}
+
+          <CarMarker position={carPosition} />
 
           {selected && (
             <InfoWindow

@@ -19,17 +19,21 @@ export interface MealDealDetail {
   venueName: string;
 }
 
+export type PriceTier = "low" | "mid" | "high";
+
 export interface ChargerStop {
   id: string;
   name: string;
   lat: number;
   lng: number;
   pricePerKwh: number;
+  priceTier: PriceTier;
   available: number;
   total: number;
   perk: ChargerPerk;
   mealDeal?: MealDealDetail;
   rank: "optimal" | "ok" | "skip";
+  onActiveRoute?: boolean; // true for the single highlighted stop on today's route
 }
 
 export interface PlannedRoute {
@@ -39,6 +43,17 @@ export interface PlannedRoute {
   distanceKm: number;
   chargerStopIds: string[];
   status: "planned" | "in_progress" | "done";
+}
+
+export interface LatLng {
+  lat: number;
+  lng: number;
+}
+
+export interface RouteWaypoint {
+  location: LatLng;
+  label: string; // "Start", "Goal 1", "Goal 2", "Finish"
+  placeName: string; // "Home - Bern", "Office - Zurich", ...
 }
 
 export interface CompanyRankingEntry {

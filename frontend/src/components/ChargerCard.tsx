@@ -1,5 +1,6 @@
 import type { ChargerStop } from "../types/domain";
 import PerkBadge from "./PerkBadge";
+import PriceTierBadge from "./PriceTierBadge";
 import chargerIcon from "../images/charger.png";
 
 const rankStyle: Record<ChargerStop["rank"], { label: string; className: string }> = {
@@ -25,7 +26,7 @@ export default function ChargerCard({ charger }: { charger: ChargerStop }) {
           </span>
         </div>
         <div className="flex flex-wrap items-center gap-2 text-[12px] text-text-muted">
-          <span className="tabular">CHF {charger.pricePerKwh.toFixed(2)}/kWh</span>
+          <PriceTierBadge tier={charger.priceTier} pricePerKwh={charger.pricePerKwh} />
           <span>·</span>
           <span className="tabular">
             {charger.available}/{charger.total} free
